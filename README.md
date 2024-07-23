@@ -1,7 +1,7 @@
 # tar1090
 
 
-![Screenshot1](https://raw.githubusercontent.com/VirusPilot/tar1090/screenshots/screenshot3.png)
+![Screenshot1](https://raw.githubusercontent.com/wiedehopf/tar1090/screenshots/screenshot3.png)
 
 Provides an improved webinterface for use with ADS-B decoders readsb / dump1090-fa
 
@@ -354,7 +354,7 @@ sudo /usr/local/share/tar1090/getupintheair.sh XXXXX 12192 adsbx
 
 ## /tar1090/?pTracks
 
-![Screenshot2](https://raw.githubusercontent.com/VirusPilot/tar1090/screenshots/screenshot4.png)
+![Screenshot2](https://raw.githubusercontent.com/wiedehopf/tar1090/screenshots/screenshot4.png)
 
 - Add /?pTracks to the usual /tar1090 URL, should look like this: http://192.168.x.yy/tar1090/?pTracks
 - Shows the last 8 hours of traces you have seen, gives a nice visual representation of your coverage / range
