@@ -334,6 +334,48 @@ function createBaseLayers() {
         }));
     }
 
+    if (loStore['mapboxKey'] != undefined)
+        MapboxAPIKey = loStore['mapboxKey'];
+
+    if (MapboxAPIKey) {
+        world.push(new ol.MapboxVectorLayer({
+            styleUrl: 'mapbox://styles/mapbox/streets-v10',
+            accessToken: MapboxAPIKey,
+            properties: {
+                name: 'mapbox_streets',
+                title: 'Mapbox Streets',
+                type: 'base',
+            },
+        }));
+        world.push(new ol.MapboxVectorLayer({
+            styleUrl: 'mapbox://styles/mapbox/light-v11',
+            accessToken: MapboxAPIKey,
+            properties: {
+                name: 'mapbox_light',
+                title: 'Mapbox Light',
+                type: 'base',
+            },
+        }));
+        world.push(new ol.MapboxVectorLayer({
+            styleUrl: 'mapbox://styles/mapbox/dark-v11',
+            accessToken: MapboxAPIKey,
+            properties: {
+                name: 'mapbox_dark',
+                title: 'Mapbox Dark',
+                type: 'base',
+            },
+        }));
+        world.push(new ol.MapboxVectorLayer({
+            styleUrl: 'mapbox://styles/mapbox/outdoors-v10',
+            accessToken: MapboxAPIKey,
+            properties: {
+                name: 'mapbox_outdoors',
+                title: 'Mapbox Outdoors',
+                type: 'base',
+            },
+        }));
+    }
+
     if (1) {
         us.push(new ol.layer.Tile({
             source: new ol.source.XYZ({
@@ -551,7 +593,9 @@ function createBaseLayers() {
             opacity: nexradOpacity,
             visible: false,
             zIndex: 99,
-            extent: naExtent,
+            //extent: naExtent,
+            // this somehow seems to cause webgl errors.
+            // workaround by just not using this, it's not important
         });
 
         let refreshNexrad = function() {
@@ -660,7 +704,8 @@ function createBaseLayers() {
             opacity: dwdRadolanOpacity,
             visible: false,
             zIndex: 99,
-            extent: dwdExtent,
+            //extent: dwdExtent,
+            // extent somehow bugged
         });
 
 
