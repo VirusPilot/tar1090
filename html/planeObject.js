@@ -675,7 +675,7 @@ PlaneObject.prototype.getDataSourceNumber = function() {
     if (this.dataSource == "adsb")
         return 1;
 
-    if (this.dataSource == "other")
+    if (this.dataSource == "other" || this.dataSource == "ais")
         return 7;
 
     return 8;
@@ -834,7 +834,7 @@ PlaneObject.prototype.updateIcon = function() {
 
     if ( enableLabels && (!multiSelect || (multiSelect && this.selected)) &&
         (
-            (zoomLvl >= labelZoom && this.altitude != "ground")
+            (zoomLvl >= labelZoom && this.altitude != "ground" && this.dataSource != "ais")
             || (zoomLvl >= labelZoomGround - 2 && this.speed > 5 && !this.fakeHex)
             || (zoomLvl >= labelZoomGround + 0 && !this.fakeHex)
             || (zoomLvl >= labelZoomGround + 1)
@@ -1495,6 +1495,8 @@ PlaneObject.prototype.updateData = function(now, last, data, init) {
         this.dataSource = "other";
     } else if (type == 'unknown') {
         this.dataSource = "unknown";
+    } else if (type == 'ais') {
+        this.dataSource = "ais";
     }
 
     if (isArray) {
