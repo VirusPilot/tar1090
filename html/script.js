@@ -12,6 +12,8 @@ g.route_check_array = [];
 g.route_check_in_flight = false;
 g.route_cache_timer = new Date().getTime() / 1000 + 1; // one second from now
 
+g.mapOrientation = mapOrientation;
+
 // Define our global variables
 let tabHidden = false;
 let webgl = false;
@@ -134,7 +136,7 @@ let lastRequestSize = 0;
 let lastRequestBox = '';
 let nextQuerySelected = 0;
 let enableDynamicCachebusting = false;
-let lastRefreshInt = 1000;
+g.lastRefreshInt = 1000;
 let reapTimeout = globeIndex ? 240 : 480;
 
 
@@ -537,6 +539,8 @@ function fetchData(options) {
     }
     let currentTime = new Date().getTime();
     const refreshMs = refreshInt()
+    g.lastRefreshInt = refreshMs;
+
     if (!options.force) {
         if (
             currentTime - lastFetch <= refreshMs
@@ -1063,9 +1067,9 @@ function earlyInitPage() {
 
 
     if (value = usp.getFloat('mapOrientation')) {
-        mapOrientation = value;
+        g.mapOrientation = value;
     }
-    mapOrientation *= (Math.PI/180); // adjust to radians
+    g.mapOrientation *= (Math.PI/180); // adjust to radians
 
     if (usp.has('r') || usp.has('replay')) {
         let numbers = (usp.get('r') || usp.get('replay') || "").split(/(?:-|:)/);
@@ -2501,6 +2505,10 @@ function ol_map_init() {
             if (MapType_tar1090 == lyr.get('name')) {
                 foundType = true;
                 lyr.setVisible(true);
+
+                mapTypeSettings();
+                const onVisible = lyr.get('onVisible');
+                onVisible && onVisible(lyr);
             } else {
                 lyr.setVisible(false);
             }
@@ -2509,6 +2517,8 @@ function ol_map_init() {
                 if (evt.target.getVisible()) {
                     MapType_tar1090 = loStore['MapType_tar1090'] = evt.target.get('name');
                     mapTypeSettings();
+                    const onVisible = lyr.get('onVisible');
+                    onVisible && onVisible(lyr);
                 }
             });
         } else if (lyr.get('type') === 'overlay') {
@@ -2543,7 +2553,7 @@ function ol_map_init() {
     OLProj = OLMap.getView().getProjection();
     OLProjExtent = OLProj.getExtent();
 
-    OLMap.getView().setRotation(mapOrientation); // adjust orientation
+    OLMap.getView().setRotation(g.mapOrientation); // adjust orientation
 
     OLMap.addControl(new ol.control.LayerSwitcher({
         groupSelectStyle: 'none',
@@ -4605,7 +4615,7 @@ function resetMap() {
 
         //console.log('resetMap setting center ' + [CenterLat, CenterLon]);
         OLMap.getView().setCenter(ol.proj.fromLonLat([CenterLon, CenterLat]));
-        OLMap.getView().setRotation(mapOrientation);
+        OLMap.getView().setRotation(g.mapOrientation);
 
         //selectPlaneByHex(null,false);
         jQuery("#update_error").css('display','none');
@@ -6467,8 +6477,6 @@ function refreshInt() {
 
     //console.log(refresh);
 
-    lastRefreshInt = refresh;
-
     return refresh;
 }
 
@@ -7446,6 +7454,8 @@ function drawHeatmap() {
                     alt |= -65536;
                 if (alt == -123)
                     alt = 'ground';
+                else if (alt == -124)
+                    alt = null;
                 else
                     alt *= 25;
 
@@ -7930,6 +7940,8 @@ function replayStep(arg) {
             alt |= -65536;
         if (alt == -123)
             alt = 'ground';
+        else if (alt == -124)
+            alt = null;
         else
             alt *= 25;
 
